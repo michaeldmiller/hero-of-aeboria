@@ -231,7 +231,7 @@ class Hero(pygame.sprite.Sprite):
         self.right_image, self.right_rect = load_image('blonde_man_64_right.png', (255, 255, 255))
         # set other properties
         self.max_speed = 5
-        self.position = vec(300, 500)
+        self.position = vec(300, 100)
         self.velocity = vec(0, 0)
         self.acceleration = vec(0, gravity)
         # set boolean behavior/state checks, largely for collision purposes
