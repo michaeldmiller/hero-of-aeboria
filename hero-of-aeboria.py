@@ -1,6 +1,8 @@
 # Hero of Aeboria, version 0.0.1
 # changelog: with a strong base engine with (at least mostly) working physics,
-# we can now officially switch to git managed versioning and officially leave experimental builds behind
+# we can now officially switch to git managed versioning and officially leave experimental builds behind.
+
+# officially naming version on github
 
 # import modules
 import pygame
