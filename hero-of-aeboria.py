@@ -1,5 +1,6 @@
-# first experiment, version 0.13
-# changelog: further work on multi-entity collision, switches multi-entity to the new collision equations
+# Hero of Aeboria, version 0.0.1
+# changelog: with a strong base engine with (at least mostly) working physics,
+# we can now officially switch to git managed versioning and officially leave experimental builds behind
 
 # import modules
 import pygame
