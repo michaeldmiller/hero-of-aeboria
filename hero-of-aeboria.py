@@ -1,8 +1,7 @@
-# Hero of Aeboria, version 0.0.1
-# changelog: with a strong base engine with (at least mostly) working physics,
-# we can now officially switch to git managed versioning and officially leave experimental builds behind.
+# Hero of Aeboria, version 0.1.1
+# changelog: adds an enemy class, Demon, changes collision physics to apply to all moving sprites, and gives
+# the Demon class rudimentary movement AI
 
-# officially naming version on github, retry
 
 # import modules
 import pygame
@@ -48,14 +47,31 @@ class Game:
 
     def new_game(self):
         self.frame_count = 1
+
+        # sprite groups
         self.all_sprites = pygame.sprite.Group()
+        self.character_sprites = pygame.sprite.Group()
         self.terrain = pygame.sprite.Group()
+        self.enemy_sprites = pygame.sprite.Group()
+        self.not_hero = pygame.sprite.Group()
+
+        # add hero
         self.hero = Hero(self)
         self.all_sprites.add(self.hero)
+        self.character_sprites.add(self.hero)
+
+        # add test demon
+        new_demon = Demon(self, 500, 100)
+        self.all_sprites.add(new_demon)
+        self.character_sprites.add(new_demon)
+        self.not_hero.add(new_demon)
+
+        # initialize background
         self.background = load_image("banner.jpg")
         self.background = self.background[0].convert()
         self.font = pygame.font.SysFont("cambria.ttf", 20)
         self.text_surface = self.font.render(str(self.hero.velocity), False, (0, 0, 0))
+
         for terrain_tuple in terrain_list:
             x_val = terrain_tuple[0]
             y_val = terrain_tuple[1]
@@ -64,9 +80,14 @@ class Game:
             terrain_piece = TerrainElement(x_val, y_val, w_val, h_val)
             self.all_sprites.add(terrain_piece)
             self.terrain.add(terrain_piece)
+            self.not_hero.add(terrain_piece)
         # self.first_sound = load_sound('1.wav')
         # self.second_sound = load_sound('2.wav')
 
+        print(self.not_hero)
+        # for all in self.not_hero:
+        #     print(all)
+        #     print(type(all))
         self.run()
 
     def run(self):
@@ -84,108 +105,115 @@ class Game:
         self.all_sprites.update()
 
         # detect collisions
-        collision = pygame.sprite.spritecollide(self.hero, self.terrain, False)
-        if collision:
-            if len(collision) == 1:
-                # old interpretation: if collision[0].rect.y > self.hero.rect.y:
-                # within 15 pixels or if character is falling at greater than 15 px/sec (i.e. could
-                # get more than 15 px into the object in less than 1 frame)
-                if abs(collision[0].rect.y - self.hero.rect.bottom) < 15 or self.hero.velocity.y > 15:
-                    # above
-                    self.hero.position.y = collision[0].rect.top + 1
-                    self.hero.velocity.y = 0
-                    self.hero.on_ground = True
-                elif abs(collision[0].rect.left - self.hero.rect.right) < 5:
-                    # left
-                    self.hero.position.x = collision[0].rect.left - (0.5 * self.hero.rect.width)
-                    self.hero.velocity.x = 0
-                elif abs(collision[0].rect.right - self.hero.rect.left) < 5:
-                    # right
-                    self.hero.position.x = collision[0].rect.right + (0.5 * self.hero.rect.width)
-                    self.hero.velocity.x = 0
-                elif collision[0].rect.bottom > self.hero.rect.top:
-                    # below
-                    # bounce back with equivalent or a maximum y velocity
-                    if abs(self.hero.velocity.y) > 0:
-                        if abs(self.hero.velocity.y) > 1:
-                            self.hero.velocity.y = 1
-                        else:
-                            self.hero.velocity.y = - self.hero.velocity.y
-                    else:
-                        self.hero.velocity.y = 0
-                    # set position to bottom and set acceleration to gravity
-                    self.hero.position.y = collision[0].rect.bottom + self.hero.rect.height + 1
-                    self.hero.on_ground = False
-                    self.hero.acceleration.y = gravity
-
-            # if hero is colliding with more than one terrain object
-            if len(collision) > 1:
-                location_of_lowest = 0
-                lowest_y = 0
-                location_counter = 0
-                # determine which terrain object is the lowest
-                for terrain_item in collision:
-                    if terrain_item.rect.top > lowest_y:
-                        lowest_y = terrain_item.rect.top
-                        location_of_lowest = location_counter
-                    location_counter += 1
-                # assume it is resting on that object and calculate accordingly
-                if collision[location_of_lowest].rect.y > self.hero.rect.y:
-                        self.hero.position.y = collision[location_of_lowest].rect.top + 1
-                        self.hero.velocity.y = 0
-                        self.hero.on_ground = True
-                        # print("top")
-
-                # then remove the ground object and calculate directional collisions
-                new_collision = list(collision)
-                del new_collision[location_of_lowest]
-                for remaining in new_collision:
-                    if abs(remaining.rect.left - self.hero.rect.right) < 5:
+        for character in self.character_sprites:
+            character.stuck = False
+            collision = pygame.sprite.spritecollide(character, self.terrain, False)
+            if collision:
+                if len(collision) == 1:
+                    # old interpretation: if collision[0].rect.y > self.hero.rect.y:
+                    # within 15 pixels or if character is falling at greater than 15 px/sec (i.e. could
+                    # get more than 15 px into the object in less than 1 frame)
+                    if abs(collision[0].rect.y - character.rect.bottom) < 15 or character.velocity.y > 15:
+                        # above
+                        character.position.y = collision[0].rect.top + 1
+                        character.velocity.y = 0
+                        character.on_ground = True
+                    elif abs(collision[0].rect.left - character.rect.right) < 5:
                         # left
-                        self.hero.position.x = remaining.rect.left - (0.5 * self.hero.rect.width)
-                        self.hero.velocity.x = 0
-                    elif abs(remaining.rect.right - self.hero.rect.left) < 5:
+                        character.position.x = collision[0].rect.left - (0.5 * character.rect.width)
+                        character.velocity.x = 0
+                    elif abs(collision[0].rect.right - character.rect.left) < 5:
                         # right
-                        self.hero.position.x = remaining.rect.right + (0.5 * self.hero.rect.width)
-                        self.hero.velocity.x = 0
-                    elif remaining.rect.bottom > self.hero.rect.top:
+                        character.position.x = collision[0].rect.right + (0.5 * character.rect.width)
+                        character.velocity.x = 0
+                    elif collision[0].rect.bottom > character.rect.top:
                         # below
                         # bounce back with equivalent or a maximum y velocity
-                        if abs(self.hero.velocity.y) > 0:
-                            if abs(self.hero.velocity.y) > 1:
-                                self.hero.velocity.y = 1
+                        if abs(character.velocity.y) > 0:
+                            if abs(character.velocity.y) > 1:
+                                character.velocity.y = 1
                             else:
-                                self.hero.velocity.y = - self.hero.velocity.y
+                                character.velocity.y = - character.velocity.y
                         else:
-                            self.hero.velocity.y = 0
+                            character.velocity.y = 0
                         # set position to bottom and set acceleration to gravity
-                        self.hero.position.y = remaining.rect.bottom + self.hero.rect.height + 1
-                        self.hero.on_ground = False
-                        self.hero.acceleration.y = gravity
+                        character.position.y = collision[0].rect.bottom + character.rect.height + 1
+                        character.on_ground = False
+                        character.acceleration.y = gravity
 
-            # self.hero.rect.midbottom = self.hero.position
+                # if hero is colliding with more than one terrain object
+                if len(collision) > 1:
+                    location_of_lowest = 0
+                    lowest_y = 0
+                    location_counter = 0
+                    # determine which terrain object is the lowest
+                    for terrain_item in collision:
+                        if terrain_item.rect.top > lowest_y:
+                            lowest_y = terrain_item.rect.top
+                            location_of_lowest = location_counter
+                        location_counter += 1
+                    # assume it is resting on that object and calculate accordingly
+                    if collision[location_of_lowest].rect.y > character.rect.y:
+                        character.position.y = collision[location_of_lowest].rect.top + 1
+                        character.velocity.y = 0
+                        character.on_ground = True
+                        # print("top")
 
-        # if no collision, apply gravity
-        if not collision:
-            self.hero.acceleration.y = gravity
+                    # then remove the ground object and calculate directional collisions
+                    new_collision = list(collision)
+                    del new_collision[location_of_lowest]
+                    for remaining in new_collision:
+                        if abs(remaining.rect.left - character.rect.right) < 5:
+                            # left
+                            character.position.x = remaining.rect.left - (0.5 * character.rect.width)
+                            character.velocity.x = 0
+                            character.stuck = True
+                            character.on_ground = True
+                        elif abs(remaining.rect.right - character.rect.left) < 5:
+                            # right
+                            character.position.x = remaining.rect.right + (0.5 * character.rect.width)
+                            character.velocity.x = 0
+                            character.stuck = True
+                            character.on_ground = True
+                        elif remaining.rect.bottom > character.rect.top:
+                            # below
+                            # bounce back with equivalent or a maximum y velocity
+                            if abs(character.velocity.y) > 0:
+                                if abs(character.velocity.y) > 1:
+                                    character.velocity.y = 1
+                                else:
+                                    character.velocity.y = - character.velocity.y
+                            else:
+                                character.velocity.y = 0
+                            # set position to bottom and set acceleration to gravity
+                            character.position.y = remaining.rect.bottom + character.rect.height + 1
+                            character.on_ground = False
+                            character.acceleration.y = gravity
+
+                # self.hero.rect.midbottom = self.hero.position
+
+            # if no collision, apply gravity
+            if not collision:
+                character.acceleration.y = gravity
 
         # screen recenter
         if self.hero.position.x > 0.93 * window_x_size:
             self.hero.position.x -= 5
-            for block in self.terrain:
-                block.position.x -= 5
+            for element in self.not_hero:
+                element.position.x -= 5
 
         if self.hero.position.x < 0.07 * window_x_size:
             self.hero.position.x += 5
-            for block in self.terrain:\
-                block.position.x += 5
+            for element in self.not_hero:
+                element.position.x += 5
 
         self.side_scroll()
 
     def draw(self):
         mouse_pos = pygame.mouse.get_pos()
         text_surface = self.font.render(str(self.hero.velocity) + str(self.hero.acceleration)
-                                        + str(mouse_pos) + str(self.hero.position) + str(self.hero.time_since_jump), True, (0, 0, 0))
+                                        + str(mouse_pos) + str(self.hero.position) + str(self.hero.time_since_jump),
+                                        True, (0, 0, 0))
         collision = pygame.sprite.spritecollide(self.hero, self.terrain, False)
         collision_text = ""
         for all in collision:
@@ -246,6 +274,7 @@ class Hero(pygame.sprite.Sprite):
         self.time_since_jump = 0
         self.cant_go_right = False
         self.cant_go_left = False
+        self.stuck = False
 
     def update(self):
         """hero movement and position instructions"""
@@ -301,8 +330,8 @@ class Hero(pygame.sprite.Sprite):
         if self.at_right_edge:
             self.acceleration.x += self.velocity.x * friction_constant
             self.velocity += self.acceleration
-            for terrain_piece in self.game.terrain:
-                terrain_piece.position.x -= self.velocity.x + (0.5 * self.acceleration.x)
+            for game_object in self.game.not_hero:
+                game_object.position.x -= self.velocity.x + (0.5 * self.acceleration.x)
             if self.going_left:
                 self.position.x += self.velocity.x + (0.5 * self.acceleration.x)
             self.position.y += self.velocity.y + (0.5 * self.acceleration.y)
@@ -311,8 +340,8 @@ class Hero(pygame.sprite.Sprite):
         elif self.at_left_edge:
             self.acceleration.x += self.velocity.x * friction_constant
             self.velocity += self.acceleration
-            for terrain_piece in self.game.terrain:
-                terrain_piece.position.x -= self.velocity.x + (0.5 * self.acceleration.x)
+            for game_object in self.game.not_hero:
+                game_object.position.x -= self.velocity.x + (0.5 * self.acceleration.x)
             if self.going_right:
                 self.position.x += self.velocity.x + (0.5 * self.acceleration.x)
             self.position.y += self.velocity.y + (0.5 * self.acceleration.y)
@@ -377,6 +406,7 @@ class Hero(pygame.sprite.Sprite):
 
 class TerrainElement(pygame.sprite.Sprite):
     """Basic terrain objects to collide with"""
+
     def __init__(self, platx, platy, platw, plath):
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.Surface((platw, plath))
@@ -389,6 +419,93 @@ class TerrainElement(pygame.sprite.Sprite):
 
     def update(self):
         self.rect.midbottom = self.position
+
+
+class Demon(pygame.sprite.Sprite):
+    """Demon enemy class"""
+
+    def __init__(self, game, init_x, init_y):
+        # <required package>
+        pygame.sprite.Sprite.__init__(self)
+        self.game = game
+        self.image, self.rect = load_image('demon_left.png', (255, 255, 255))
+        # load sprite images
+        self.left_image, self.left_rect = load_image('demon_left.png', (255, 255, 255))
+        self.right_image, self.right_rect = load_image('demon_right.png', (255, 255, 255))
+        # set other properties
+        self.max_speed = 1.5
+        self.position = vec(init_x, init_y)
+        self.velocity = vec(0, 0)
+        self.acceleration = vec(0, gravity)
+        self.stuck = False
+        self.on_ground = False
+        self.time_since_jump = 0
+        # </required package>
+        self.vector_distance_from_hero = vec(1000, 1000)
+        self.linear_distance_from_hero = 1000
+
+    def update(self):
+        self.acceleration.x = 0
+        self.time_since_jump += 1
+
+        # calculate distance from hero
+        # self.vector_distance_from_hero = self.position - self.game.hero.position
+        # self.linear_distance_from_hero = abs(((self.vector_distance_from_hero[0] ** 2) +
+        #                                   (self.vector_distance_from_hero[1] ** 2)) ** 0.5)
+
+        # chase hero
+        # movement logic / AI
+        # initial direction
+        self.acceleration.x = -0.2
+        if self.stuck:
+            self.jump()
+
+        # # if close to hero, chase him
+        # if self.linear_distance_from_hero < 250:
+        #     if self.vector_distance_from_hero[0] >= 0:
+        #         self.acceleration.x = 0.2
+        #     if self.vector_distance_from_hero[0] < 0:
+        #         self.acceleration.x = -0.2
+
+        if self.time_since_jump > 200:
+            self.acceleration.x = 0.2
+
+        if self.velocity.x < 0:
+            self.image = self.left_image
+            self.rect = self.left_rect
+        elif self.velocity.x >= 0:
+            self.image = self.right_image
+            self.rect = self.right_rect
+
+        # on ground check
+        if self.acceleration.y > 0:
+            self.on_ground = False
+
+        # always newtonian physics
+        self.acceleration.x += self.velocity.x * friction_constant
+        self.velocity += self.acceleration
+        self.position += self.velocity + (0.5 * self.acceleration)
+
+        # cap max speed
+        if self.velocity.x > self.max_speed:
+            self.velocity.x = self.max_speed
+        if self.velocity.x < -self.max_speed:
+            self.velocity.x = -self.max_speed
+
+        # y wrap
+        if self.position.y > window_y_size:
+            self.position.y = 0
+        if self.position.y < 0:
+            self.position.y = window_y_size
+
+        # update position
+        self.rect.midbottom = self.position
+
+    def jump(self):
+        collide = pygame.sprite.spritecollide(self, self.game.terrain, False)
+        if collide and self.on_ground and self.time_since_jump > 0.16 * target_frame_rate:
+            self.acceleration.y += -10
+            self.time_since_jump = 0
 
 
 # thanks pygame tutorials
@@ -427,5 +544,11 @@ def load_sound(name):
         raise SystemExit(message)
     return sound
 
+
+# format for stage block dictionaries:
+# name, [course object 1, course object 2, course object ...., course object x],
+# [enemy 1, enemy 2, enemy ..., enemy x]
+# types:
+# str, list of TerrainElements
 
 game = Game()
