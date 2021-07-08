@@ -1,6 +1,5 @@
-# Hero of Aeboria, version 0.1.1
-# changelog: adds an enemy class, Demon, changes collision physics to apply to all moving sprites, and gives
-# the Demon class rudimentary movement AI
+# Hero of Aeboria, version 0.1.2
+# changelog: adds player following behavior to Demon class
 
 
 # import modules
@@ -443,32 +442,43 @@ class Demon(pygame.sprite.Sprite):
         # </required package>
         self.vector_distance_from_hero = vec(1000, 1000)
         self.linear_distance_from_hero = 1000
+        self.time_since_behavior_change = 0
+        self.default_acceleration = vec(0, 0)
 
     def update(self):
         self.acceleration.x = 0
         self.time_since_jump += 1
+        self.time_since_behavior_change += 1
 
         # calculate distance from hero
-        # self.vector_distance_from_hero = self.position - self.game.hero.position
-        # self.linear_distance_from_hero = abs(((self.vector_distance_from_hero[0] ** 2) +
-        #                                   (self.vector_distance_from_hero[1] ** 2)) ** 0.5)
+        self.vector_distance_from_hero = self.position - self.game.hero.position
+        self.linear_distance_from_hero = abs(((self.vector_distance_from_hero[0] ** 2) +
+                                          (self.vector_distance_from_hero[1] ** 2)) ** 0.5)
 
         # chase hero
         # movement logic / AI
         # initial direction
-        self.acceleration.x = -0.2
         if self.stuck:
             self.jump()
 
-        # # if close to hero, chase him
-        # if self.linear_distance_from_hero < 250:
-        #     if self.vector_distance_from_hero[0] >= 0:
-        #         self.acceleration.x = 0.2
-        #     if self.vector_distance_from_hero[0] < 0:
-        #         self.acceleration.x = -0.2
+        if self.time_since_behavior_change > 10:
+            self.acceleration = self.default_acceleration
+            self.time_since_behavior_change = 0
 
         if self.time_since_jump > 200:
             self.acceleration.x = 0.2
+
+        print(self.vector_distance_from_hero)
+        print(self.linear_distance_from_hero)
+        # if close to hero, chase him
+        if self.linear_distance_from_hero < 300:
+            if self.vector_distance_from_hero[0] >= 0:
+                self.default_acceleration.x = -0.2
+            if self.vector_distance_from_hero[0] < 0:
+                self.default_acceleration.x = 0.2
+
+
+
 
         if self.velocity.x < 0:
             self.image = self.left_image
