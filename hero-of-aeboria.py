@@ -1,5 +1,5 @@
-# Hero of Aeboria, version 0.1.2
-# changelog: adds player following behavior to Demon class
+# Hero of Aeboria, version 0.1.3
+# changelog: adds crude attack animations for Hero
 
 
 # import modules
@@ -259,6 +259,9 @@ class Hero(pygame.sprite.Sprite):
         # load sprite images
         self.left_image, self.left_rect = load_image('blonde_man_64_left.png', (255, 255, 255))
         self.right_image, self.right_rect = load_image('blonde_man_64_right.png', (255, 255, 255))
+        # load attack images
+        self.left_attack_image, self.left_attack_rect = load_image('blonde_man_attack_left.png', (255, 255, 255))
+        self.right_attack_image, self.right_attack_rect = load_image('blonde_man_attack_right.png', (255, 255, 255))
         # set other properties
         self.max_speed = 5
         self.position = vec(300, 100)
@@ -274,6 +277,7 @@ class Hero(pygame.sprite.Sprite):
         self.cant_go_right = False
         self.cant_go_left = False
         self.stuck = False
+        self.hero_attack = False
 
     def update(self):
         """hero movement and position instructions"""
@@ -297,6 +301,20 @@ class Hero(pygame.sprite.Sprite):
             self.jump()
         if keys[K_DOWN]:
             self.acceleration.y = 20
+        if keys[K_SPACE]:
+            self.hero_attack = True
+            if self.going_left:
+                self.image = self.left_attack_image
+                self.rect = self.left_attack_rect
+            elif self.going_right:
+                self.image = self.right_attack_image
+                self.rect = self.right_attack_rect
+            elif self.velocity.x < 0:
+                self.image = self.left_attack_image
+                self.rect = self.left_attack_rect
+            elif self.velocity.x >= 0:
+                self.image = self.right_attack_image
+                self.rect = self.right_attack_rect
 
         # check if the player is trying to go left or right
         if keys[K_LEFT] and not keys[K_RIGHT]:
@@ -371,6 +389,8 @@ class Hero(pygame.sprite.Sprite):
 
         # finally update position
         self.rect.midbottom = self.position
+
+        enemy_collide = pygame.sprite.spritecollide(self, self.game.enemy_sprites, False)
 
     def jump(self):
         collide = pygame.sprite.spritecollide(self, self.game.terrain, False)
@@ -453,7 +473,7 @@ class Demon(pygame.sprite.Sprite):
         # calculate distance from hero
         self.vector_distance_from_hero = self.position - self.game.hero.position
         self.linear_distance_from_hero = abs(((self.vector_distance_from_hero[0] ** 2) +
-                                          (self.vector_distance_from_hero[1] ** 2)) ** 0.5)
+                                              (self.vector_distance_from_hero[1] ** 2)) ** 0.5)
 
         # chase hero
         # movement logic / AI
@@ -468,17 +488,12 @@ class Demon(pygame.sprite.Sprite):
         if self.time_since_jump > 200:
             self.acceleration.x = 0.2
 
-        print(self.vector_distance_from_hero)
-        print(self.linear_distance_from_hero)
         # if close to hero, chase him
         if self.linear_distance_from_hero < 300:
             if self.vector_distance_from_hero[0] >= 0:
                 self.default_acceleration.x = -0.2
             if self.vector_distance_from_hero[0] < 0:
                 self.default_acceleration.x = 0.2
-
-
-
 
         if self.velocity.x < 0:
             self.image = self.left_image
