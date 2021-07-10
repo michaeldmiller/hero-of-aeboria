@@ -1,5 +1,6 @@
-# Hero of Aeboria, version 0.2.2
-# changelog: moves collisions to separate file
+# Hero of Aeboria, version 0.2.3
+# changelog: adds default Hero animation to allow for attack animation to reset
+# automatically
 
 # import modules
 import sys
@@ -11,6 +12,7 @@ vec = pygame.math.Vector2
 # speed = how many seconds should elapse, on average,
 # between two new terrain pieces spawning
 # terrain_gen_speed = 2
+
 
 class Game:
     """Class to initialize and hold game loop and handle events"""
@@ -83,7 +85,8 @@ class Game:
         self.all_sprites.update()
 
         # detect collisions
-        game_collision(self)
+        terrain_collision(self)
+
         # screen recenter
         if self.hero.position.x > 0.93 * window_x_size:
             self.hero.position.x -= 5

@@ -3,7 +3,7 @@ import pygame
 from hoasettings import *
 
 
-def game_collision(game):
+def terrain_collision(game):
     # detect collisions
     for character in game.character_sprites:
         character.stuck = False

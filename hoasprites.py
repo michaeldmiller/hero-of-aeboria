@@ -48,6 +48,14 @@ class Hero(pygame.sprite.Sprite):
         keys = pygame.key.get_pressed()
         self.time_since_jump += 1
 
+        # set default animation
+        if self.velocity.x > 0:
+            self.image = self.right_image
+            self.rect = self.right_rect
+        if self.velocity.x <= 0:
+            self.image = self.left_image
+            self.rect = self.left_rect
+
         # key press actions
         if keys[K_LEFT]:
             self.move_left()
@@ -63,18 +71,27 @@ class Hero(pygame.sprite.Sprite):
             self.acceleration.y = 20
         if keys[K_SPACE]:
             self.hero_attack = True
-            if self.going_left:
+
+            # determine attack direction and animate accordingly
+            if self.image == self.left_image:
                 self.image = self.left_attack_image
                 self.rect = self.left_attack_rect
-            elif self.going_right:
+            elif self.image == self.right_image:
                 self.image = self.right_attack_image
                 self.rect = self.right_attack_rect
-            elif self.velocity.x < 0:
-                self.image = self.left_attack_image
-                self.rect = self.left_attack_rect
-            elif self.velocity.x >= 0:
-                self.image = self.right_attack_image
-                self.rect = self.right_attack_rect
+
+            # if self.going_left:
+            #     self.image = self.left_attack_image
+            #     self.rect = self.left_attack_rect
+            # elif self.going_right:
+            #     self.image = self.right_attack_image
+            #     self.rect = self.right_attack_rect
+            # elif self.velocity.x < 0:
+            #     self.image = self.left_attack_image
+            #     self.rect = self.left_attack_rect
+            # elif self.velocity.x >= 0:
+            #     self.image = self.right_attack_image
+            #     self.rect = self.right_attack_rect
 
         # check if the player is trying to go left or right
         if keys[K_LEFT] and not keys[K_RIGHT]:
@@ -183,23 +200,6 @@ class Hero(pygame.sprite.Sprite):
             self.cant_go_right = False
 
 
-class TerrainElement(pygame.sprite.Sprite):
-    """Basic terrain objects to collide with"""
-
-    def __init__(self, platx, platy, platw, plath):
-        pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.Surface((platw, plath))
-        color = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
-        self.image.fill(color)
-        self.rect = self.image.get_rect()
-        self.rect.x = platx
-        self.rect.y = platy
-        self.position = vec(platx, platy)
-
-    def update(self):
-        self.rect.midbottom = self.position
-
-
 class Demon(pygame.sprite.Sprite):
     """Demon enemy class"""
 
@@ -291,6 +291,23 @@ class Demon(pygame.sprite.Sprite):
         if collide and self.on_ground and self.time_since_jump > 0.16 * target_frame_rate:
             self.acceleration.y += -10
             self.time_since_jump = 0
+
+
+class TerrainElement(pygame.sprite.Sprite):
+    """Basic terrain objects to collide with"""
+
+    def __init__(self, platx, platy, platw, plath):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.Surface((platw, plath))
+        color = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
+        self.image.fill(color)
+        self.rect = self.image.get_rect()
+        self.rect.x = platx
+        self.rect.y = platy
+        self.position = vec(platx, platy)
+
+    def update(self):
+        self.rect.midbottom = self.position
 
 
 def load_image(name, colorkey=None):
