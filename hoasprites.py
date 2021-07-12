@@ -33,11 +33,13 @@ class Hero(pygame.sprite.Sprite):
         self.at_right_edge = False
         self.going_left = False
         self.going_right = False
-        self.time_since_jump = 0
         self.cant_go_right = False
         self.cant_go_left = False
         self.stuck = False
         self.hero_attack = False
+        self.time_since_jump = 0
+        self.time_since_attack = 0
+
 
     def update(self):
         """hero movement and position instructions"""
@@ -47,6 +49,7 @@ class Hero(pygame.sprite.Sprite):
         self.going_right = False
         keys = pygame.key.get_pressed()
         self.time_since_jump += 1
+        self.time_since_attack += 1
 
         # set default animation
         if self.velocity.x > 0:
@@ -70,28 +73,16 @@ class Hero(pygame.sprite.Sprite):
         if keys[K_DOWN]:
             self.acceleration.y = 20
         if keys[K_SPACE]:
-            self.hero_attack = True
-
-            # determine attack direction and animate accordingly
-            if self.image == self.left_image:
-                self.image = self.left_attack_image
-                self.rect = self.left_attack_rect
-            elif self.image == self.right_image:
-                self.image = self.right_attack_image
-                self.rect = self.right_attack_rect
-
-            # if self.going_left:
-            #     self.image = self.left_attack_image
-            #     self.rect = self.left_attack_rect
-            # elif self.going_right:
-            #     self.image = self.right_attack_image
-            #     self.rect = self.right_attack_rect
-            # elif self.velocity.x < 0:
-            #     self.image = self.left_attack_image
-            #     self.rect = self.left_attack_rect
-            # elif self.velocity.x >= 0:
-            #     self.image = self.right_attack_image
-            #     self.rect = self.right_attack_rect
+            if self.time_since_attack > 30:
+                self.hero_attack = True
+                self.time_since_attack = 0
+                # determine attack direction and animate accordingly
+                if self.image == self.left_image:
+                    self.image = self.left_attack_image
+                    self.rect = self.left_attack_rect
+                elif self.image == self.right_image:
+                    self.image = self.right_attack_image
+                    self.rect = self.right_attack_rect
 
         # check if the player is trying to go left or right
         if keys[K_LEFT] and not keys[K_RIGHT]:
@@ -99,6 +90,17 @@ class Hero(pygame.sprite.Sprite):
 
         if keys[K_RIGHT] and not keys[K_LEFT]:
             self.going_right = True
+
+        # make attack animation sticky
+        if self.time_since_attack < 15:
+            if self.image == self.left_image:
+                self.image = self.left_attack_image
+                self.rect = self.left_attack_rect
+            elif self.image == self.right_image:
+                self.image = self.right_attack_image
+                self.rect = self.right_attack_rect
+        else:
+            self.hero_attack = False
 
         # check for global statuses
         # falling

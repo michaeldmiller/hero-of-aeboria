@@ -1,6 +1,5 @@
-# Hero of Aeboria, version 0.2.3
-# changelog: adds default Hero animation to allow for attack animation to reset
-# automatically
+# Hero of Aeboria, version 0.2.4
+# changelog: adds hero/enemy combat with the new enemy_collision function
 
 # import modules
 import sys
@@ -44,7 +43,15 @@ class Game:
         new_demon = Demon(self, 500, 100)
         self.all_sprites.add(new_demon)
         self.character_sprites.add(new_demon)
+        self.enemy_sprites.add(new_demon)
         self.not_hero.add(new_demon)
+
+        # add second demon
+        second_demon = Demon(self, 1500, 100)
+        self.all_sprites.add(second_demon)
+        self.character_sprites.add(second_demon)
+        self.enemy_sprites.add(second_demon)
+        self.not_hero.add(second_demon)
 
         # initialize background
         self.background = load_image("banner.jpg")
@@ -86,6 +93,7 @@ class Game:
 
         # detect collisions
         terrain_collision(self)
+        enemy_collision(self)
 
         # screen recenter
         if self.hero.position.x > 0.93 * window_x_size:
