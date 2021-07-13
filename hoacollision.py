@@ -103,8 +103,12 @@ def enemy_collision(game):
         if len(combat) == 1:
             if game.hero.hero_attack:
                 combat[0].kill()
-            else:
-                game.hero.kill()
+            elif game.hero.invulnerability_time == 0:
+                if game.hero.health > 1:
+                    game.hero.health -= 1
+                    game.hero.invulnerability_time = 3 * target_frame_rate
+                else:
+                    game.hero.kill()
 
         else:
             game.hero.kill()

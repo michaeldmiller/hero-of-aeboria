@@ -1,6 +1,5 @@
-# Hero of Aeboria, version 0.3.1
-# changelog: adds heart images, begins process of adding hero health/hearts to game mechanics
-# by adding a heart display sprite
+# Hero of Aeboria, version 0.3.2
+# changelog: adds damage progression through heart sprites and damage invulnerability
 
 # import modules
 import sys
@@ -40,26 +39,27 @@ class Game:
         self.all_sprites.add(self.hero)
         self.character_sprites.add(self.hero)
 
-        # add test demon
-        new_demon = Demon(self, 500, 100)
-        self.all_sprites.add(new_demon)
-        self.character_sprites.add(new_demon)
-        self.enemy_sprites.add(new_demon)
-        self.not_hero.add(new_demon)
+        # add test demons
+        demon_list = [Demon(self, 500, 100), Demon(self, 900, 100), Demon(self, 1000, 100)]
 
-        # add second demon
-        second_demon = Demon(self, 1500, 100)
-        self.all_sprites.add(second_demon)
-        self.character_sprites.add(second_demon)
-        self.enemy_sprites.add(second_demon)
-        self.not_hero.add(second_demon)
+        for demon in demon_list:
+            self.all_sprites.add(demon)
+            self.character_sprites.add(demon)
+            self.enemy_sprites.add(demon)
+            self.not_hero.add(demon)
 
-        # add heart sprite
-        heart_sprite = pygame.sprite.Sprite()
-        heart_sprite.image, heart_sprite.rect = load_image('five_hearts.png', (255, 255, 255))
-        heart_sprite.rect.x = 40
-        heart_sprite.rect.y = 25
-        self.all_sprites.add(heart_sprite)
+        # add container heart sprite
+        self.heart_sprite = pygame.sprite.Sprite()
+
+        # add heart sprite dictionary
+        self.health_dict = {1: load_image('one_heart.png', (255, 255, 255)),
+                       2: load_image('two_hearts.png', (255, 255, 255)),
+                       3: load_image('three_hearts.png', (255, 255, 255)),
+                       4: load_image('four_hearts.png', (255, 255, 255)),
+                       5: load_image('five_hearts.png', (255, 255, 255))}
+
+        self.heart_sprite.image, self.heart_sprite.rect = self.health_dict[5]
+        self.all_sprites.add(self.heart_sprite)
 
         # initialize background
         self.background = load_image("banner.jpg")
@@ -127,10 +127,23 @@ class Game:
             collision_text += "X: " + str(all.rect.x) + " Y: " + str(all.rect.y) + "; "
         collision_text_surface = self.font.render(collision_text, True, (0, 0, 0))
 
+        # hero health
+        self.heart_sprite.image, self.heart_sprite.rect = self.health_dict[self.hero.health]
+        self.heart_sprite.rect.x = 40
+        self.heart_sprite.rect.y = 25
+
+        # background and diagnostics
         self.screen.blit(self.background, (0, 0))
         self.screen.blit(text_surface, (40, 50))
         self.screen.blit(collision_text_surface, (40, 75))
-        # self.screen.blit(heart_surface, (40, 25))
+
+        # damage invulnerability
+        if self.hero.invulnerability_time > 0.05:
+            invulnerability_text_surface = self.font.render("Damage invulnerability time remaining: " +
+                                                            str(round(self.hero.invulnerability_time, 1)),
+                                                            True, (0, 0, 0))
+            self.screen.blit(invulnerability_text_surface, (40, 85))
+
         self.all_sprites.draw(self.screen)
         pygame.display.flip()
 

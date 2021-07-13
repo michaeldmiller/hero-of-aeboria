@@ -39,6 +39,8 @@ class Hero(pygame.sprite.Sprite):
         self.hero_attack = False
         self.time_since_jump = 0
         self.time_since_attack = 0
+        self.health = 5
+        self.invulnerability_time = 0
 
 
     def update(self):
@@ -50,6 +52,12 @@ class Hero(pygame.sprite.Sprite):
         keys = pygame.key.get_pressed()
         self.time_since_jump += 1
         self.time_since_attack += 1
+
+        # reduce invulnerability time by 1 frame if it is greater than 0
+        if self.invulnerability_time > 0:
+            self.invulnerability_time -= 1
+        else:
+            self.invulnerability_time = 0
 
         # set default animation
         if self.velocity.x > 0:
@@ -73,7 +81,7 @@ class Hero(pygame.sprite.Sprite):
         if keys[K_DOWN]:
             self.acceleration.y = 20
         if keys[K_SPACE]:
-            if self.time_since_attack > 42:
+            if self.time_since_attack > 35:
                 self.hero_attack = True
                 self.time_since_attack = 0
                 # determine attack direction and animate accordingly
