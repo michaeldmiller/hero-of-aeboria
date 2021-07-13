@@ -101,8 +101,6 @@ def enemy_collision(game):
     combat = pygame.sprite.spritecollide(game.hero, game.enemy_sprites, False)
     if combat:
         if len(combat) == 1:
-            # valid_hero_states = [game.hero.left_attack_image, game.hero.right_attack_image]
-            # if game.hero.image not in valid_hero_states:
             if game.hero.hero_attack:
                 combat[0].kill()
             else:

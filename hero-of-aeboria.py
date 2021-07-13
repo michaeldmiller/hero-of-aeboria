@@ -1,5 +1,6 @@
-# Hero of Aeboria, version 0.2.4
-# changelog: adds hero/enemy combat with the new enemy_collision function
+# Hero of Aeboria, version 0.3.1
+# changelog: adds heart images, begins process of adding hero health/hearts to game mechanics
+# by adding a heart display sprite
 
 # import modules
 import sys
@@ -52,6 +53,13 @@ class Game:
         self.character_sprites.add(second_demon)
         self.enemy_sprites.add(second_demon)
         self.not_hero.add(second_demon)
+
+        # add heart sprite
+        heart_sprite = pygame.sprite.Sprite()
+        heart_sprite.image, heart_sprite.rect = load_image('five_hearts.png', (255, 255, 255))
+        heart_sprite.rect.x = 40
+        heart_sprite.rect.y = 25
+        self.all_sprites.add(heart_sprite)
 
         # initialize background
         self.background = load_image("banner.jpg")
@@ -118,9 +126,11 @@ class Game:
         for all in collision:
             collision_text += "X: " + str(all.rect.x) + " Y: " + str(all.rect.y) + "; "
         collision_text_surface = self.font.render(collision_text, True, (0, 0, 0))
+
         self.screen.blit(self.background, (0, 0))
         self.screen.blit(text_surface, (40, 50))
         self.screen.blit(collision_text_surface, (40, 75))
+        # self.screen.blit(heart_surface, (40, 25))
         self.all_sprites.draw(self.screen)
         pygame.display.flip()
 

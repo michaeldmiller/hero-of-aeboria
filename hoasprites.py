@@ -73,7 +73,7 @@ class Hero(pygame.sprite.Sprite):
         if keys[K_DOWN]:
             self.acceleration.y = 20
         if keys[K_SPACE]:
-            if self.time_since_attack > 30:
+            if self.time_since_attack > 42:
                 self.hero_attack = True
                 self.time_since_attack = 0
                 # determine attack direction and animate accordingly
@@ -92,7 +92,7 @@ class Hero(pygame.sprite.Sprite):
             self.going_right = True
 
         # make attack animation sticky
-        if self.time_since_attack < 15:
+        if self.time_since_attack < 20:
             if self.image == self.left_image:
                 self.image = self.left_attack_image
                 self.rect = self.left_attack_rect
