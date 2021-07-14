@@ -42,6 +42,9 @@ class Hero(pygame.sprite.Sprite):
         self.health = 5
         self.invulnerability_time = 0
 
+        # development only
+        self.diagnostic = False
+
 
     def update(self):
         """hero movement and position instructions"""
@@ -52,6 +55,9 @@ class Hero(pygame.sprite.Sprite):
         keys = pygame.key.get_pressed()
         self.time_since_jump += 1
         self.time_since_attack += 1
+
+        # development only
+        self.diagnostic = False
 
         # reduce invulnerability time by 1 frame if it is greater than 0
         if self.invulnerability_time > 0:
@@ -99,6 +105,9 @@ class Hero(pygame.sprite.Sprite):
         if keys[K_RIGHT] and not keys[K_LEFT]:
             self.going_right = True
 
+        if keys[K_q]:
+            self.diagnostic = True
+
         # make attack animation sticky
         if self.time_since_attack < 20:
             if self.image == self.left_image:
@@ -116,13 +125,13 @@ class Hero(pygame.sprite.Sprite):
             self.on_ground = False
 
         # at right edge
-        if self.position.x > window_x_size * 0.85:
+        if self.position.x > window_x_size * 0.8:
             self.at_right_edge = True
         else:
             self.at_right_edge = False
 
         # at left edge
-        if self.position.x < window_x_size * 0.15:
+        if self.position.x < window_x_size * 0.2:
             self.at_left_edge = True
         else:
             self.at_left_edge = False

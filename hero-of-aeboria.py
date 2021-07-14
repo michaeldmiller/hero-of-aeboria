@@ -1,5 +1,7 @@
-# Hero of Aeboria, version 0.3.2
-# changelog: adds damage progression through heart sprites and damage invulnerability
+# Hero of Aeboria, version 0.3.3
+# changelog: improvements to combat display, removal of persistent diagnostics,
+# some changes to side-scroll threshold and reduction in invulnerability time
+# to improve combat experience
 
 # import modules
 import sys
@@ -19,7 +21,7 @@ class Game:
     def __init__(self):
         pygame.init()
         self.screen = pygame.display.set_mode((window_x_size, window_y_size))
-        pygame.display.set_caption("Experiment 1")
+        pygame.display.set_caption("Hero of Aeboria")
         self.clock = pygame.time.Clock()
         self.new_game()
         self.background = True
@@ -117,32 +119,34 @@ class Game:
         self.side_scroll()
 
     def draw(self):
-        mouse_pos = pygame.mouse.get_pos()
-        text_surface = self.font.render(str(self.hero.velocity) + str(self.hero.acceleration)
-                                        + str(mouse_pos) + str(self.hero.position) + str(self.hero.time_since_jump),
-                                        True, (0, 0, 0))
-        collision = pygame.sprite.spritecollide(self.hero, self.terrain, False)
-        collision_text = ""
-        for all in collision:
-            collision_text += "X: " + str(all.rect.x) + " Y: " + str(all.rect.y) + "; "
-        collision_text_surface = self.font.render(collision_text, True, (0, 0, 0))
+        # background and diagnostics
+        self.screen.blit(self.background, (0, 0))
+
+        # development only
+        if self.hero.diagnostic:
+            mouse_pos = pygame.mouse.get_pos()
+            text_surface = self.font.render(str(self.hero.velocity) + str(self.hero.acceleration)
+                                            + str(mouse_pos) + str(self.hero.position) + str(self.hero.time_since_jump),
+                                            True, (0, 0, 0))
+            collision = pygame.sprite.spritecollide(self.hero, self.terrain, False)
+            collision_text = ""
+            for all in collision:
+                collision_text += "X: " + str(all.rect.x) + " Y: " + str(all.rect.y) + "; "
+            collision_text_surface = self.font.render(collision_text, True, (0, 0, 0))
+            self.screen.blit(text_surface, (40, 50))
+            self.screen.blit(collision_text_surface, (40, 75))
+
+        # damage invulnerability
+        if self.hero.invulnerability_time > 0.05:
+            invulnerability_text_surface = self.font.render("Damage invulnerability time remaining: " +
+                                                            str(round(self.hero.invulnerability_time / target_frame_rate, 1)),
+                                                            True, (0, 0, 0))
+            self.screen.blit(invulnerability_text_surface, (40, 85))
 
         # hero health
         self.heart_sprite.image, self.heart_sprite.rect = self.health_dict[self.hero.health]
         self.heart_sprite.rect.x = 40
         self.heart_sprite.rect.y = 25
-
-        # background and diagnostics
-        self.screen.blit(self.background, (0, 0))
-        self.screen.blit(text_surface, (40, 50))
-        self.screen.blit(collision_text_surface, (40, 75))
-
-        # damage invulnerability
-        if self.hero.invulnerability_time > 0.05:
-            invulnerability_text_surface = self.font.render("Damage invulnerability time remaining: " +
-                                                            str(round(self.hero.invulnerability_time, 1)),
-                                                            True, (0, 0, 0))
-            self.screen.blit(invulnerability_text_surface, (40, 85))
 
         self.all_sprites.draw(self.screen)
         pygame.display.flip()
