@@ -1,7 +1,5 @@
-# Hero of Aeboria, version 0.3.3
-# changelog: improvements to combat display, removal of persistent diagnostics,
-# some changes to side-scroll threshold and reduction in invulnerability time
-# to improve combat experience
+# Hero of Aeboria, version 0.3.4
+# changelog: adds physical collisions between hero and demons
 
 # import modules
 import sys
