@@ -131,6 +131,38 @@ def enemy_collision(game):
             else:
                 game.hero.kill()
 
+        # if more than one enemy
         else:
-            game.hero.kill()
+            if game.hero.hero_attack:
+                for enemy in combat:
+                    enemy.kill()
+
+            elif game.hero.invulnerability_time == 0:
+                if game.hero.health > 1:
+                    if abs(combat[0].rect.left - game.hero.rect.right) < 5:
+                        # left
+                        game.hero.position.x = combat[0].rect.left - (0.5 * game.hero.rect.width)
+                        game.hero.velocity.x = 0
+                    elif abs(combat[0].rect.right - game.hero.rect.left) < 5:
+                        # right
+                        game.hero.position.x = combat[0].rect.right + (0.5 * game.hero.rect.width)
+                        game.hero.velocity.x = 0
+                    # reduce hero health
+                    game.hero.health -= 1
+                    game.hero.invulnerability_time = 2 * target_frame_rate
+
+            elif game.hero.invulnerability_time >= 0:
+                if abs(combat[0].rect.left - game.hero.rect.right) < 5:
+                    # left
+                    game.hero.position.x = combat[0].rect.left - (0.5 * game.hero.rect.width)
+                    game.hero.velocity.x = 0
+                elif abs(combat[0].rect.right - game.hero.rect.left) < 5:
+                    # right
+                    game.hero.position.x = combat[0].rect.right + (0.5 * game.hero.rect.width)
+                    game.hero.velocity.x = 0
+
+            else:
+                game.hero.kill()
+
+
 

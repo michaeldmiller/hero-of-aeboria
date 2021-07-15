@@ -1,5 +1,6 @@
-# Hero of Aeboria, version 0.3.4
-# changelog: adds physical collisions between hero and demons
+# Hero of Aeboria, version 0.3.5
+# changelog: enabled combat with multiple enemies, using same logic as single combat.
+# note that enemies still do not collide with each other.
 
 # import modules
 import sys
