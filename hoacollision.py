@@ -47,39 +47,27 @@ def terrain_collision(game):
 
             # if hero is colliding with more than one terrain object
             if len(collision) > 1:
-                location_of_lowest = 0
-                lowest_y = 0
-                location_counter = 0
-                # determine which terrain object is the lowest
-                for terrain_item in collision:
-                    if terrain_item.rect.top > lowest_y:
-                        lowest_y = terrain_item.rect.top
-                        location_of_lowest = location_counter
-                    location_counter += 1
-                # assume it is resting on that object and calculate accordingly
-                if collision[location_of_lowest].rect.y > character.rect.y:
-                    character.position.y = collision[location_of_lowest].rect.top + 1
-                    character.velocity.y = 0
-                    character.on_ground = True
-                    # print("top")
-
-                # then remove the ground object and calculate directional collisions
-                new_collision = list(collision)
-                del new_collision[location_of_lowest]
-                for remaining in new_collision:
-                    if abs(remaining.rect.left - character.rect.right) < 5:
+                for terrain in collision:
+                    if terrain.rect.y > character.rect.y:
+                        character.position.y = terrain.rect.top + 1
+                        character.velocity.y = 0
+                        character.on_ground = True
+                        # print("top")
+                    elif abs(terrain.rect.left - character.rect.right) < 5:
                         # left
-                        character.position.x = remaining.rect.left - (0.5 * character.rect.width)
+                        character.position.x = terrain.rect.left - (0.5 * character.rect.width)
+                        # character.position = character.previous_valid_position
                         character.velocity.x = 0
                         character.stuck = True
                         character.on_ground = True
-                    elif abs(remaining.rect.right - character.rect.left) < 5:
+                    elif abs(terrain.rect.right - character.rect.left) < 5:
                         # right
-                        character.position.x = remaining.rect.right + (0.5 * character.rect.width)
+                        character.position.x = terrain.rect.right + (0.5 * character.rect.width)
+                        # character.position = character.previous_valid_position
                         character.velocity.x = 0
                         character.stuck = True
                         character.on_ground = True
-                    elif remaining.rect.bottom > character.rect.top:
+                    elif terrain.rect.bottom > character.rect.top:
                         # below
                         # bounce back with equivalent or a maximum y velocity
                         if abs(character.velocity.y) > 0:
@@ -90,11 +78,9 @@ def terrain_collision(game):
                         else:
                             character.velocity.y = 0
                         # set position to bottom and set acceleration to gravity
-                        character.position.y = remaining.rect.bottom + character.rect.height + 1
+                        character.position.y = terrain.rect.bottom + character.rect.height + 1
                         character.on_ground = False
                         character.acceleration.y = gravity
-
-            # self.hero.rect.midbottom = self.hero.position
 
         # if no collision, apply gravity
         if not collision:

@@ -24,6 +24,7 @@ terrain_list = [(-1000, 768, 1900, 100),    # starting ground
                 (870, 568, 30, 30),         # cliff low rung
                 (670, 468, 50, 30),         # cliff middle rung
                 (870, 368, 30, 30),         # cliff top rung
+                # end of first part of starting area, start of part two
                 ]
 
 gravity = 0.35

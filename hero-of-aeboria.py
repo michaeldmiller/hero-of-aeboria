@@ -1,10 +1,5 @@
-# Hero of Aeboria, version 0.4.1
-# changelog: converts game to run at 1366x768 resolution and begins implementing
-# actual game terrain, also changes terrain sprite initialization procedures to be more
-# design friendly and adds a new background as well as notes on future screen sizing support
-
-# big note: designing new terrain has revealed massive bugs in the collision system
-# which will have to be addressed
+# Hero of Aeboria, version 0.4.2
+# changelog: fixes a major collision issue which prevented standing on multiple terrain pieces
 
 # import modules
 import sys
