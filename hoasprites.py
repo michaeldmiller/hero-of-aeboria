@@ -315,15 +315,25 @@ class Demon(pygame.sprite.Sprite):
 class TerrainElement(pygame.sprite.Sprite):
     """Basic terrain objects to collide with"""
 
-    def __init__(self, platx, platy, platw, plath):
+    def __init__(self, plat_x, plat_y, plat_w, plat_h):
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.Surface((platw, plath))
+
+        # make all inputs integers
+        plat_x = int(plat_x)
+        plat_y = int(plat_y)
+        plat_w = int(plat_w)
+        plat_h = int(plat_h)
+
+        self.image = pygame.Surface((plat_w, plat_h))
         color = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
         self.image.fill(color)
         self.rect = self.image.get_rect()
-        self.rect.x = platx
-        self.rect.y = platy
-        self.position = vec(platx, platy)
+        rect_x = int(plat_x + (0.5 * plat_w))
+        # enable rect_y to define by top left
+        # rect_y = int(plat_y + plat_h)
+        self.rect.x = rect_x
+        self.rect.y = plat_y
+        self.position = vec(rect_x, plat_y)
 
     def update(self):
         self.rect.midbottom = self.position
@@ -331,7 +341,6 @@ class TerrainElement(pygame.sprite.Sprite):
 
 def load_image(name, colorkey=None):
     full_image_name = os.path.join('data', name)
-    print(full_image_name)
     try:
         image = pygame.image.load(full_image_name)
     except pygame.error as message:

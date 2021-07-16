@@ -1,5 +1,10 @@
-# Hero of Aeboria, version 0.3.6
-# changelog: fixed jump hyper-acceleration bug
+# Hero of Aeboria, version 0.4.1
+# changelog: converts game to run at 1366x768 resolution and begins implementing
+# actual game terrain, also changes terrain sprite initialization procedures to be more
+# design friendly and adds a new background as well as notes on future screen sizing support
+
+# big note: designing new terrain has revealed massive bugs in the collision system
+# which will have to be addressed
 
 # import modules
 import sys
@@ -26,6 +31,9 @@ class Game:
 
     def new_game(self):
         self.frame_count = 1
+
+        # screen_widths = pygame.display.list_modes()
+        # print(screen_widths)
 
         # sprite groups
         self.all_sprites = pygame.sprite.Group()
@@ -65,7 +73,7 @@ class Game:
         self.all_sprites.add(self.heart_sprite)
 
         # initialize background
-        self.background = load_image("banner.jpg")
+        self.background = load_image("mountain_background.png")
         self.background = self.background[0].convert()
         self.font = pygame.font.SysFont("cambria.ttf", 20)
         self.text_surface = self.font.render(str(self.hero.velocity), False, (0, 0, 0))
