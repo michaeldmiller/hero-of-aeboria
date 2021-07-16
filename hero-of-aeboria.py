@@ -1,5 +1,5 @@
-# Hero of Aeboria, version 0.4.2
-# changelog: fixes a major collision issue which prevented standing on multiple terrain pieces
+# Hero of Aeboria, version 0.4.3
+# changelog: adds new terrain past the first cliff
 
 # import modules
 import sys
