@@ -22,10 +22,14 @@ def terrain_collision(game):
                     # left
                     character.position.x = collision[0].rect.left - (0.5 * character.rect.width)
                     character.velocity.x = 0
+                    # fixes jump hyper-acceleration bug
+                    character.acceleration.y = gravity
                 elif abs(collision[0].rect.right - character.rect.left) < 5:
                     # right
                     character.position.x = collision[0].rect.right + (0.5 * character.rect.width)
                     character.velocity.x = 0
+                    # fixes jump hyper-acceleration bug
+                    character.acceleration.y = gravity
                 elif collision[0].rect.bottom > character.rect.top:
                     # below
                     # bounce back with equivalent or a maximum y velocity

@@ -1,6 +1,5 @@
-# Hero of Aeboria, version 0.3.5
-# changelog: enabled combat with multiple enemies, using same logic as single combat.
-# note that enemies still do not collide with each other.
+# Hero of Aeboria, version 0.3.6
+# changelog: fixed jump hyper-acceleration bug
 
 # import modules
 import sys
@@ -42,6 +41,9 @@ class Game:
 
         # add test demons
         demon_list = [Demon(self, 500, 100), Demon(self, 900, 100), Demon(self, 1000, 100)]
+
+        # for no demons:
+        # demon_list = []
 
         for demon in demon_list:
             self.all_sprites.add(demon)
