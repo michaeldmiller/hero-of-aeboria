@@ -27,7 +27,7 @@ terrain_list = [(-1000, 768, 1900, 100),    # starting ground
                 # end of first part of starting area, start of part two
                 (1325, 518, 50, 300),       # cliff right edge
                 (1025, 380, 300, 30),       # cliff top internal
-                (975, 530, 300, 30),        # cliff middle internal
+                (975, 530, 250, 30),        # cliff middle internal
                 (975, 768, 700, 155),       # cliff bottom
                 (1675, 750, 80, 38),        # cliff jagged right edge one
                 (1675, 695, 125, 57),       # cliff jagged right edge two
@@ -37,6 +37,7 @@ gravity = 0.35
 friction_constant = -0.07
 side_scroll_speed = 1
 
-old_terrain_list = [(500, 400, 5000, 20), (300, 350, 100, 50), (500, 325, 100, 50), (700, 300, 100, 50),
+old_terrain_list = [(-2000, 400, 5000, 20), (300, 350, 100, 50), (500, 325, 100, 50), (700, 300, 100, 50),
                     (900, 300, 200, 50), (1100, 300, 50, 500), (-200, 310, 350, 50), (-210, 315, 100, 75),
-                    (-260, 350, 30, 50), (2500, 400, 50, 50)]
+                    (-190, 350, 30, 50), (2500, 400, 50, 50)]
+

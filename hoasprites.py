@@ -107,6 +107,7 @@ class Hero(pygame.sprite.Sprite):
 
         if keys[K_q]:
             self.diagnostic = True
+            # print("mark")
 
         # make attack animation sticky
         if self.time_since_attack < 20:

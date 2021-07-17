@@ -1,5 +1,8 @@
-# Hero of Aeboria, version 0.4.3
-# changelog: adds new terrain past the first cliff
+# Hero of Aeboria, version 0.4.4
+# changelog: complete collision logic overhaul to fix myriad bugs in the collision system which were causing warps
+# seemingly at random. Moved away from absolute values to chained conditional checks for left and right, synchronized
+# logic between single and multiple collisions, instituted absolute value checks for bottom collisions, and clarified
+# high velocity checks for top collisions.
 
 # import modules
 import sys
