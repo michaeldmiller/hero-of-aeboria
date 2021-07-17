@@ -1,8 +1,6 @@
-# Hero of Aeboria, version 0.4.4
-# changelog: complete collision logic overhaul to fix myriad bugs in the collision system which were causing warps
-# seemingly at random. Moved away from absolute values to chained conditional checks for left and right, synchronized
-# logic between single and multiple collisions, instituted absolute value checks for bottom collisions, and clarified
-# high velocity checks for top collisions.
+# Hero of Aeboria, version 0.4.5
+# changelog: minor code cleanup and removal of developmental or unused code from the
+# collision overhaul in 0.4.4
 
 # import modules
 import sys

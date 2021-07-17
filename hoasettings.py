@@ -1,5 +1,5 @@
-# hero of aeboria settings file
-# all relevant setting variables, including window size, terrain blocks, gravity, and frame-rate
+# Hero of Aeboria settings file
+# includes all relevant settings variables, including window size, terrain blocks, gravity, and frame-rate
 
 target_frame_rate = 60
 window_x_size = 1366

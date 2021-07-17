@@ -1,4 +1,4 @@
-# this file initializes the various sprites used by the hero-of-aeboria game loop
+# this file initializes the various sprites used by the Hero of Aeboria game loop
 import pygame
 from pygame.locals import *
 import os
@@ -45,7 +45,6 @@ class Hero(pygame.sprite.Sprite):
         # development only
         self.diagnostic = False
 
-
     def update(self):
         """hero movement and position instructions"""
         # initial variable settings
@@ -84,8 +83,8 @@ class Hero(pygame.sprite.Sprite):
             self.rect = self.right_rect
         if keys[K_UP]:
             self.jump()
-        if keys[K_DOWN]:
-            self.acceleration.y = 20
+        # if keys[K_DOWN]:
+        #     self.acceleration.y = 20
         if keys[K_SPACE]:
             if self.time_since_attack > 35:
                 self.hero_attack = True
@@ -186,8 +185,6 @@ class Hero(pygame.sprite.Sprite):
 
         # finally update position
         self.rect.midbottom = self.position
-
-        enemy_collide = pygame.sprite.spritecollide(self, self.game.enemy_sprites, False)
 
     def jump(self):
         collide = pygame.sprite.spritecollide(self, self.game.terrain, False)
