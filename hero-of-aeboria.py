@@ -1,6 +1,5 @@
-# Hero of Aeboria, version 0.4.5
-# changelog: minor code cleanup and removal of developmental or unused code from the
-# collision overhaul in 0.4.4
+# Hero of Aeboria, version 0.4.6
+# changelog: finished terrain in starting area
 
 # import modules
 import sys

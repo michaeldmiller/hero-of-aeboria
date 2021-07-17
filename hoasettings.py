@@ -20,22 +20,34 @@ window_y_size = 768
 terrain_list = [(-1000, 768, 1900, 100),    # starting ground
                 (-500, 768, 50, 1366),      # (to be made invisible) left wall
                 (900, 768, 75, 550),        # cliff start/left wall
-                (975, 268, 300, 50),        # cliff top
+                (975, 268, 300, 50),        # cliff roof
+                (940, 218, 270, 65),        # cliff cap
                 (870, 568, 30, 30),         # cliff low rung
                 (670, 468, 50, 30),         # cliff middle rung
                 (870, 368, 30, 30),         # cliff top rung
                 # end of first part of starting area, start of part two
-                (1325, 518, 50, 300),       # cliff right edge
+                (1325, 538, 95, 320),       # cliff right edge
+                (1420, 480, 27, 140),       # cliff right edge jagged bottom
+                (1420, 315, 45, 85),        # cliff right edge jagged top
+                (1465, 425, 22, 60),        # cliff right edge floating first
+                (1545, 415, 42, 27),        # cliff right edge floating second
+                (1505, 290, 17, 45),        # cliff right edge floating third
                 (1025, 380, 300, 30),       # cliff top internal
-                (975, 530, 250, 30),        # cliff middle internal
-                (975, 768, 700, 155),       # cliff bottom
-                (1675, 750, 80, 38),        # cliff jagged right edge one
-                (1675, 695, 125, 57),       # cliff jagged right edge two
+                (975, 520, 250, 30),        # cliff middle internal
+                (975, 768, 550, 155),       # cliff bottom
+                (1525, 750, 80, 38),        # lower cliff jagged right edge bottom
+                (1525, 705, 125, 67),       # lower cliff jagged right edge top
+                (1685, 680, 60, 35),        # lower cliff floating first
+                (1675, 745, 30, 50),        # lower cliff floating second
+                (1790, 675, 45, 25),        # lower cliff floating third
+                (1650, 575, 150, 30),       # first floating platform
+                # end of starting area
                 ]
 
 gravity = 0.35
 friction_constant = -0.07
 side_scroll_speed = 1
+hero_start_position_x, hero_start_position_y = 1200, 50
 
 old_terrain_list = [(-2000, 400, 5000, 20), (300, 350, 100, 50), (500, 325, 100, 50), (700, 300, 100, 50),
                     (900, 300, 200, 50), (1100, 300, 50, 500), (-200, 310, 350, 50), (-210, 315, 100, 75),
