@@ -15,7 +15,7 @@ def terrain_collision(game):
                 # get more than 15 px into the object in less than 1 frame)
                 # later add, also ensure in high velocity check that the block is still generally
                 # below the character, to prevent identification errors
-                if abs(collision[0].rect.y - character.rect.bottom) < 15 or character.velocity.y > 15 and collision[0].rect.centery > character.rect.bottom:
+                if abs(collision[0].rect.y - character.rect.bottom) < 15 or character.velocity.y > 15 and collision[0].rect.bottom > character.rect.bottom:
                     # above
                     character.position.y = collision[0].rect.top + 1
                     character.velocity.y = 0

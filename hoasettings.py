@@ -40,14 +40,45 @@ terrain_list = [(-1000, 768, 1900, 100),    # starting ground
                 (1685, 680, 60, 35),        # lower cliff floating first
                 (1675, 745, 30, 50),        # lower cliff floating second
                 (1790, 675, 45, 25),        # lower cliff floating third
-                (1650, 575, 150, 30),       # first floating platform
+                (1950, 575, 150, 35),       # first floating platform
                 # end of starting area
+                (2100, 450, 210, 30),       # 1st second stage platform, stage start x is 2100
+                (2350, 330, 90, 40),        # 2nd platform, middle
+                (2510, 280, 40, 30),        # rock after 2nd platform
+                (2480, 390, 25, 30),        # lower rock after 2nd platform for back-track
+                (2540, 515, 290, 35),       # 3rd range, lower, 2500 - 2600
+                (2610, 310, 200, 35),       # 3rd range, upper
+                (2800, 630, 200, 40),       # 4th range, lower, 2800 - 3000
+                (2950, 250, 170, 35),       # 4th range, upper
+                (3020, 730, 310, 50),       # 5th range, lower (heart here?), 3000 - 3200
+                (3200, 190, 150, 35),       # 5th range, upper
+                (3100, 490, 200, 40),       # 5th range, middle
+                (3170, 350, 40, 30),        # 5th range, upper middle rock
+                (3600, 730, 180, 35),       # 6th range, lower, 3400 - 3700
+                (3700, 600, 40, 40),        # 6th range, lower rock
+                (3450, 510, 120, 30),       # 6th range, upper middle
+                (3500, 80, 50, 30),         # 6th range, upper
+                (3660, 230, 120, 35),       # 6th range, upper second
+                (3850, 380, 130, 45),       # 7th range, middle out, 3800 - 4000
+                (3900, 700, 80, 35),       # 7th range, lower out
+                (3870, 150, 110, 50),       # 7th range, upper out
                 ]
+
+# General stage drafting notes:
+# Each stage should be 2000 pixels long in the x direction and have a mix of terrain
+# features, hearts, and enemies. Critically, each stage needs to have a common in and out
+# compatibility, at the least having an accessible ending platform around screen middle
+# (x = 384, ~= 380) and a starting terrain feature which is accessible either by fall or jump from
+# the previous stage's terrain feature at x ~= 380.
+# Doing this is a bit reductive in terms of stage design, but allows for the possibility of random
+# stage assignment: as long as stages are compatible with each other, then theoretically they could
+# be presented in any order (after the two starting stages).
+
 
 gravity = 0.35
 friction_constant = -0.07
 side_scroll_speed = 1
-hero_start_position_x, hero_start_position_y = 1200, 50
+hero_start_position_x, hero_start_position_y = 1050, 50
 
 old_terrain_list = [(-2000, 400, 5000, 20), (300, 350, 100, 50), (500, 325, 100, 50), (700, 300, 100, 50),
                     (900, 300, 200, 50), (1100, 300, 50, 500), (-200, 310, 350, 50), (-210, 315, 100, 75),

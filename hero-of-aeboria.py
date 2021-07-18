@@ -1,12 +1,14 @@
-# Hero of Aeboria, version 0.4.6
-# changelog: finished terrain in starting area
+# Hero of Aeboria, version 0.4.7
+# changelog: adds second stage, completing the terrain of the starting area, and
+# adds notes on future stage block design. Also reduces high-velocity collision
+# detection threshold due to phasing
 
 # import modules
 import sys
 from hoasprites import *
 from hoacollision import *
 
-vec = pygame.math.Vector2
+vec = pygame.math.Vector2()
 
 # speed = how many seconds should elapse, on average,
 # between two new terrain pieces spawning
